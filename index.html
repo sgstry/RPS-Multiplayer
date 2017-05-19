@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Rock, Paper, Scissors</title>
+		<link rel="stylesheet" type="text/css" href="assets/css/reset.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="assets/css/style.css">
+
+	</head>
+	<body>
+
+		<div class="page-header">
+  			<h1>Rock Paper Scissors</h1>
+		</div>
+		<div class="container">
+			<span style="display: none">Hi </span>
+			<span style="display: none"> You are Player </span>
+			<div class="row">
+				<div class="col-md-4 col-md-offset-4">
+					<div class="input-group">
+			      		<input type="text" class="form-control" placeholder="Name">
+			      		<span class="input-group-btn">
+			        		<button class="btn btn-secondary" type="button">Start</button>
+			      		</span>
+			    	</div>
+		    	</div>
+		    </div>
+		    <div class="row" id="game-row">
+		    	<div class="col-md-4 tile">
+		    		<div class="play" id="player1">
+		    			<div class="player-name">P1 Name</div>
+		    			<div class="choice">Rock</div>
+		    			<div class="choice">Paper</div>
+		    			<div class="choice">Scissors</div>
+		    			<div class="score">Wins:  Losses: </div>
+		    		</div>
+		    	</div>
+		    	<div class="col-md-4 tile">
+		    		<div class="play" id="winner">Winner</div>
+		    	</div>
+		    	<div class="col-md-4 tile">
+		    		<div class="play" id="player2">
+		    			<div class="player-name">P2 Name</div>
+		    			<div class="choice">Rock</div>
+		    			<div class="choice">Paper</div>
+		    			<div class="choice">Scissors</div>
+		    			<div class="score">Wins:  Losses: </div>
+		    		</div>
+		    	</div>
+		    </div>
+	    </div> 
+
+	</body>
+
+
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+	<!-- Rock Paper Scissors game logic -->
+	<script src="assets/javascript/rps.js"></script>
+</html>
