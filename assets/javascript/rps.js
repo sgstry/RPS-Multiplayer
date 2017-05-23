@@ -134,10 +134,10 @@ $(document).ready(function() {
 		chosen = false;
 		if(myPlayer != "") {
 			$("#status").html("Pick Rock, Paper, or Scissors!");
-			choice1.choice = "";
-			choice2.choice = "";
-			choicesRef.remove();
 		}
+		choice1.choice = "";
+		choice2.choice = "";
+		choicesRef.remove();
 	};
 
 	var decideWinner = function() {
@@ -346,6 +346,7 @@ $(document).ready(function() {
 					var ref = playersRef.push({player: playerObj1});
 					ref.onDisconnect().remove();
 					myPlayer = "player1";
+					numChosen = 0;
 				} else {
 					var playerObj2 = {
 						id: myId,
@@ -356,6 +357,7 @@ $(document).ready(function() {
 					var ref = playersRef.push({player: playerObj2});
 					ref.onDisconnect().remove();
 					myPlayer = "player2";
+					numChosen = 0;
 				}
 				$("#name-input").val("");
 				$(".start").css("display", "none");
