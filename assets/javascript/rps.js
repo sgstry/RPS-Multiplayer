@@ -6,26 +6,36 @@ var gameFull = false;
 var myPlayer = "";
 var myId = "";
 
-chosen = false;
+var p1Wins = 0;
+var p1Losses = 0;
+var p2Wins = 0;
+var p2Losses = 0;
+
+var chosen = false;
+var numChosen = 0;
+
+var choice1 = {
+	choice: "",
+	position: 0
+};
+
+var choice2 = {
+	choice: "",
+	position: 1
+};
 
 var player1 = {
 	id: myId,
 	position: 0,
 	connected: false,
-	name: "",
-	choice: "",
-	wins: 0,
-	losses: 0
+	name: ""
 };
 
 var player2 = {
 	id: myId,
 	position: 1,
 	connected: false,
-	name: "",
-	choice: "",
-	wins: 0,
-	losses: 0
+	name: ""
 };
 
 var numPlayers = 0;
@@ -100,19 +110,96 @@ $(document).ready(function() {
 		    player1.position = 0;
 		    player1.connected = false;
 		    player1.name = "";
-		    player1.choice = "";
-		    player1.wins = 0;
-		    player1.losses = 0;
+		    choice1.choice = "";
+		    choice1.position = 0;
+		    p1Wins = 0;
+		    p1Losses = 0;
 		} else if(pNum === 1){
 			player2.id = "";
 		    player2.position = 1;
 		    player2.connected = false;
 		    player2.name = "";
-		    player2.choice = "";
-		    player2.wins = 0;
-		    player2.losses = 0;
+		    choice2.choice = "";
+		    choice2.position = 1;
+		    p2Wins = 0;
+		    p2Losses = 0;
 		}
 	};
+
+	var resetScreen = function() {
+		$(".p1choice").css("background-color", "white");
+		$(".p2choice").css("background-color", "white");
+		$(".p1choice").css("color", "black");
+		$(".p2choice").css("color", "black");
+		chosen = false;
+		if(myPlayer != "") {
+			$("#status").html("Pick Rock, Paper, or Scissors!");
+			choice1.choice = "";
+			choice2.choice = "";
+			choicesRef.remove();
+		}
+	};
+
+	var decideWinner = function() {
+		var c1 = choice1.choice;
+		var c2 = choice2.choice;
+
+		if(c1 === "Rock" && c2 === "Rock") {
+			$("#status").html("Tie! Play Again!");
+		} else if(c1 === "Rock" && c2 === "Paper") {
+			p2Wins++;
+			p1Losses++;
+			$("#status").html(player2.name+" wins with Paper!");
+		} else if(c1 === "Rock" && c2 === "Scissors") {
+			p1Wins++;
+			p2Losses++;
+			$("#status").html(player1.name+" wins with Rock!");
+		} else if(c1 === "Paper" && c2 === "Rock") {
+			p1Wins++;
+			p2Losses++
+			$("#status").html(player1.name+" wins with Paper!");
+		} else if(c1 === "Paper" && c2 === "Paper") {
+			$("#status").html("Tie! Play Again");
+		} else if(c1 === "Paper" && c2 === "Scissors") {
+			p2Wins++;
+			p1Losses++;
+			$("#status").html(player2.name+" wins with Scissors!");
+		} else if(c1 === "Scissors" && c2 === "Rock") {
+			p2Wins++;
+			p1Losses++;
+			$("#status").html(player2.name+" wins with Rock!");
+		} else if(c1 === "Scissors" && c2 === "Paper") {
+			p1Wins++;
+			p2Losses++;
+			$("#status").html(player1.name+" wins with Scissors!");
+		} else if(c1 === "Scissors" && c2 === "Scissors") {
+			$("#status").html("Tie! Play Again!");
+		}
+
+	    $("#player2-score").html("Wins: "+p2Wins+" Losses: "+p2Losses);
+	    $("#player1-score").html("Wins: "+p1Wins+" Losses: "+p1Losses);
+	    numChosen = 0;
+	    setTimeout(resetScreen, 4000);
+
+	};	
+
+	choicesRef.on("child_added", function(snapshot){
+			numChosen++;
+			var choice = snapshot.val().choice;
+			var pos = snapshot.val().position;
+			if(pos === 1) {
+				choice2.choice = choice;
+				choice2.position = pos;
+			} else if(pos === 0) {
+				choice1.choice = choice;
+				choice1.position = pos;	
+			}
+			if(myPlayer != "") {
+				if(numChosen === 2) {
+					decideWinner();
+				}
+			}
+	});
 
 	//Map current players in database to player1 and player2 objects
     //and reset UI
@@ -127,7 +214,7 @@ $(document).ready(function() {
 		  	}
 		  	numPlayers++;
 	    	$("#player2-name").html(player2.name);
-	    	$("#player2-score").html("Wins: "+player2.wins+" Losses: "+player2.losses);
+	    	$("#player2-score").html("Wins: "+p2Wins+" Losses: "+p2Losses);
 	    	$("#player2-score").css("display", "block");
 	      	$(".p2choice").css("display", "block");
 	    } else if(pos === 0){
@@ -138,7 +225,7 @@ $(document).ready(function() {
 	  		}
 	  		numPlayers++;
 	    	$("#player1-name").html(player1.name);
-	    	$("#player1-score").html("Wins: "+player1.wins+" Losses: "+player1.losses);
+	    	$("#player1-score").html("Wins: "+p1Wins+" Losses: "+p1Losses);
 	    	$("#player1-score").css("display", "block");
 	      	$(".p1choice").css("display", "block");
 	    }
@@ -179,13 +266,14 @@ $(document).ready(function() {
       			resetPlayer(1);
       		}
         }
+
     }, function(errorObject) {
       console.log("The read failed: " + errorObject.code);
     });
 
     $("#check").on("click", function() {
-		console.log(player1);
-		console.log(player2);
+		console.log(choice1);
+		console.log(choice2);
 	});
 
     $(".p1choice").mouseover(function(){
@@ -201,10 +289,16 @@ $(document).ready(function() {
 	});
 
 	$(".p1choice").on("click", function() {
-		if(myPlayer === "player1" && !chosen) {
+		if(myPlayer === "player1" && !chosen && player2.connected) {
 			chosen = true;
-			$(this).css("background-color", "yellow");
-			$(this).css("color", "blue");
+			var ref = choicesRef.push({choice: $(this).text(),
+									   position: 0});
+			ref.onDisconnect().remove();
+			$(this).css("background-color", "blue");
+			$(this).css("color", "yellow");
+			if(choice2.choice === "") {
+				$("#status").html("Waiting on "+player2.name+" to choose...");
+			}
 		}
 	});
 
@@ -221,10 +315,16 @@ $(document).ready(function() {
 	});
 
 	$(".p2choice").on("click", function() {
-		if(myPlayer === "player2" && !chosen) {
-			chosen = true
-			$(this).css("background-color", "yellow");
-			$(this).css("color", "blue");
+		if(myPlayer === "player2" && !chosen && player1.connected) {
+			chosen = true;
+			var ref = choicesRef.push({choice: $(this).text(),
+									 position: 1});
+			ref.onDisconnect().remove();
+			$(this).css("background-color", "blue");
+			$(this).css("color", "yellow");
+			if(choice1.choice === "") {
+				$("#status").html("Waiting on "+player1.name+" to choose...");
+			}
 		}
 	});
 
@@ -241,10 +341,7 @@ $(document).ready(function() {
 						id: myId,
 						position: 0,
 						connected: true,
-						name: name,
-						choice: "",
-						wins: 0,
-						losses: 0
+						name: name
 					};
 					var ref = playersRef.push({player: playerObj1});
 					ref.onDisconnect().remove();
@@ -254,10 +351,7 @@ $(document).ready(function() {
 						id: myId,
 						position: 1,
 						connected: true,
-						name: name,
-						choice: "",
-						wins: 0,
-						losses: 0
+						name: name
 					}
 					var ref = playersRef.push({player: playerObj2});
 					ref.onDisconnect().remove();
@@ -265,6 +359,7 @@ $(document).ready(function() {
 				}
 				$("#name-input").val("");
 				$(".start").css("display", "none");
+				$("#status").html("Pick Rock, Paper, or Scissors!");
 			} else {
 				alert("Sorry, there are already two people playing. Please wait for your turn.");
 			}
