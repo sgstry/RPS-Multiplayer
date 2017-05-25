@@ -1,0 +1,7 @@
+{
+  "name": "Rock Paper Scissors",
+  "short_name": "rps",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "orientation": "portrait"
+}
