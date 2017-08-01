@@ -11,3 +11,5 @@ Technologies Leveraged:
 -jQuery
 -Google Auth
 -Firebase
+
+Link to the game: https://rps-multiplayer-7a8d2.firebaseapp.com/
